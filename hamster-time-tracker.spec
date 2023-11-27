@@ -17,7 +17,7 @@ BuildArch:        noarch
 
 BuildRequires:    gettext intltool itstool yelp
 BuildRequires:    python3-devel python3-pyxdg python3-cairo python3-gobject python3-dbus
-BuildRequires:    glib2-devel
+BuildRequires:    glib2-devel desktop-file-utils
 
 Requires:         dbus
 Requires:         hicolor-icon-theme
@@ -44,6 +44,7 @@ is a request of your employee.
 %autosetup -p1 -n%{srcname}-%{version}
 # remove shebang
 sed -ibackup '1d' src/%{srcname}/overview.py # src/%{srcname}/today.py
+sed -ibackup 's@#!/usr/bin/env python@#!/usr/bin/env python3@g' waf
 
 %build
 export CFLAGS="%{optflags}"
@@ -97,6 +98,10 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_datadir}/locale/*/LC_MESSAGES/%{srcname}.mo
 
 %changelog
+* Mon Nov 27 2023 Lukas Doktor <ldoktor@redhat.com> - 3.0.3
+- Fix python->python3 on the waf file
+- desktop-file-utils dependency
+
 * Mon Jun 15 2020 Markus Neteler <neteler@mundialis.de> - 3.0.2
 - New upstream version
 - updated SPEC to Python3 and new file locations
