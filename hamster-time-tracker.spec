@@ -4,51 +4,25 @@
 %global srcurl  https://github.com/project%{srcname}/%{srcname}
 
 Name:       %{srcname}-time-tracker
-Version:    3.0.2
+Version:    3.0.3
 Release:    1%{?dist}
 Summary:    The Linux time tracker
 
 License:    GPLv3+
 URL:        http://project%{srcname}.wordpress.com/
-Source0:    %{srcurl}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:    %{srcurl}/archive/v%{version}.tar.gz#/hamster-%{version}.tar.gz
 Source1:    %{name}.appdata.xml
-
-# Move service files to bindir rather than libdir
-# Stop gschema installation etc.
-# http://fedoraproject.org/wiki/Packaging:ScriptletSnippets#GConf
-#Patch0:     %{name}-1.03.3-file-locations.patch
-
-# Correct service files to point to BINDIR rather than LIBDIR
-#Patch1:     %{name}-1.03.3-service-dbus1.patch
-#Patch2:     %{name}-1.03.3-service-dbus2.patch
-
-# issue #254: temp remove WATCH_HARD_LINKS flag from file monitor
-# as it causes segfaults on gnome 3.18
-#Patch3:     %{srcurl}/commit/d869f7da0eec48df1f52771fed8ed12b12fbab61.patch
-# fix warnings in the console (gnome 3.18; should be backwards compat)
-#Patch4:     %{srcurl}/commit/03546fd08d4ef88b75f12430940b1c9bd9ac18b2.patch
-# Fix division by zero (#245).  PR#296
-#Patch5:     https://github.com/suraia/%{srcname}/commit/80f97fb3bbb92a3a85589cec7387dec953044853.patch
-# rhbz#1317087 -part1, lib/configuration.py: Fix version warning
-#Patch6:     https://github.com/cyrillos/%{srcname}/commit/9ab09a5e88a9f49a7cb8faaf4b3efe6fb8d14346.patch
-# rhbz#1317087 -part2, Fix TargetFlags. Should fix issue#306, PR#307
-#Patch7:     https://github.com/sanjayankur31/hamster/commit/91709dad223aef858d86a803116dbf1ea9bce531.patch
 
 BuildArch:        noarch
 
-BuildRequires:    gettext intltool
-BuildRequires:    glib2-devel dbus-glib
-BuildRequires:    docbook-utils gnome-doc-utils libxslt gtk-update-icon-cache
-
-BuildRequires:    desktop-file-utils
-BuildRequires:    python3-devel
-BuildRequires:    itstool
+BuildRequires:    gettext intltool itstool yelp
+BuildRequires:    python3-devel python3-pyxdg python3-cairo python3-gobject python3-dbus
+BuildRequires:    glib2-devel
 
 Requires:         dbus
 Requires:         hicolor-icon-theme
 Requires:         bash-completion
 
-#Requires:         gnome-python3-gconf
 Requires:         python3-pyxdg
 
 BuildRequires:    GConf2
@@ -81,8 +55,6 @@ export LINKFLAGS="-Wl,-z,relro"
 %install
 ./waf install --destdir=%{buildroot}
 install -p -m0644 %{SOURCE1} -D %{buildroot}/%{_datadir}/appdata/%{name}.appdata.xml
-# ?? fails on F32
-#%find_lang %{name} --with-gnome
 
 %check
 desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
